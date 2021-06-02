@@ -2,18 +2,6 @@ syntax = "proto3";
 option java_multiple_files = true;
 package com.toga.netbrain.service;
 
-message CreateAgentRequest {
-  string nodeId = 1;
-  string host = 2;
-  string username = 3;
-  string password = 4;
-  string type = 5;
-}
-
-message CreateAgentResponse {
-  bool ack = 1;
-}
-
 message AgentHostInfoRequest {
   string hostId = 1;
 }
@@ -24,6 +12,18 @@ message AgentHostInfoResponse {
   int32 numOfAgents = 3;
 
 }
+
+message CreateAgentRequest {
+  string nodeId = 1;
+  string host = 2;
+  string username = 3;
+  string password = 4;
+}
+
+message CreateAgentResponse {
+  bool ack = 1;
+}
+
 
 message NodeDiscoveryRequest {
   string agentId = 1;
@@ -41,6 +41,7 @@ message NetElement {
 
 
 service AgentService {
+  rpc getHostInfo (AgentHostInfoRequest) returns (AgentHostInfoResponse);
   rpc createAgent (CreateAgentRequest) returns (CreateAgentResponse);
   rpc runDiscovery (NodeDiscoveryRequest) returns (NodeDiscoveryResponse);
 }

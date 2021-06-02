@@ -18,23 +18,23 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         self.hostId = None
         self.hostname = socket.gethostname()
 
-    def AgentHostInfoRequest(self, request, context):
-        self.hostId = request.nodeId
+    def getHostInfo(self, request, context):
+        self.hostId = request.hostId
 
-        return agent_pb2.AgentHostInfoResponse(hostId=self.hostId, name=self.hostname,
+        return agent_pb2.AgentHostInfoResponse(hostId=self.hostId, hostName=self.hostname,
                                                numOfAgents=len(self.agents.keys()))
 
-    def CreateAgentRequest(self, request, context):
+    def createAgent(self, request, context):
         pass
 
-    def NodeDiscoveryRequest(self, request, context):
+    def runDiscovery(self, request, context):
         pass
 
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     agent_grpc.add_AgentServiceServicer_to_server(
-        agent_grpc.AgentServiceServicer(), server)
+        AgentServicer(), server)
 
     server.add_insecure_port('[::]:51051')
     server.start()

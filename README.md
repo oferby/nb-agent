@@ -5,4 +5,4 @@
     pip install grpcio-tools
 
 ## gRPC Usage
-    python -m grpc_tools.protoc -I../../protos --python_out=. --grpc_python_out=. ../../protos/route_guide.proto
+    python -m grpc_tools.protoc -I proto --python_out=proto --grpc_python_out=proto proto/netbrain_agent.proto

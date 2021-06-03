@@ -25,7 +25,10 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
                                                numOfAgents=len(self.agents.keys()))
 
     def createAgent(self, request, context):
-        pass
+        agent = ssh_agent.SSHAgent(request.host, request.username, request.password)
+        self.agents[request.host] = agent
+
+        return agent_pb2.CreateAgentResponse(ack=True)
 
     def runDiscovery(self, request, context):
         pass

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'P\001',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14netbrain_agent.proto\x12\x19\x63om.toga.netbrain.service\"&\n\x14\x41gentHostInfoRequest\x12\x0e\n\x06hostId\x18\x01 \x01(\t\"N\n\x15\x41gentHostInfoResponse\x12\x0e\n\x06hostId\x18\x01 \x01(\t\x12\x10\n\x08hostName\x18\x02 \x01(\t\x12\x13\n\x0bnumOfAgents\x18\x03 \x01(\x05\"F\n\x12\x43reateAgentRequest\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"\"\n\x13\x43reateAgentResponse\x12\x0b\n\x03\x61\x63k\x18\x01 \x01(\x08\"$\n\x14NodeDiscoveryRequest\x12\x0c\n\x04host\x18\x01 \x01(\t\"`\n\x15NodeDiscoveryResponse\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x39\n\nnetElement\x18\x02 \x03(\x0b\x32%.com.toga.netbrain.service.NetElement\"(\n\nNetElement\x12\x0b\n\x03uri\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t2\xe1\x02\n\x0c\x41gentService\x12p\n\x0bgetHostInfo\x12/.com.toga.netbrain.service.AgentHostInfoRequest\x1a\x30.com.toga.netbrain.service.AgentHostInfoResponse\x12l\n\x0b\x63reateAgent\x12-.com.toga.netbrain.service.CreateAgentRequest\x1a..com.toga.netbrain.service.CreateAgentResponse\x12q\n\x0crunDiscovery\x12/.com.toga.netbrain.service.NodeDiscoveryRequest\x1a\x30.com.toga.netbrain.service.NodeDiscoveryResponseB\x02P\x01\x62\x06proto3'
+  serialized_pb=b'\n\x14netbrain_agent.proto\x12\x19\x63om.toga.netbrain.service\"&\n\x14\x41gentHostInfoRequest\x12\x0e\n\x06hostId\x18\x01 \x01(\t\"N\n\x15\x41gentHostInfoResponse\x12\x0e\n\x06hostId\x18\x01 \x01(\t\x12\x10\n\x08hostName\x18\x02 \x01(\t\x12\x13\n\x0bnumOfAgents\x18\x03 \x01(\x05\"F\n\x12\x43reateAgentRequest\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"\"\n\x13\x43reateAgentResponse\x12\x0b\n\x03\x61\x63k\x18\x01 \x01(\x08\"$\n\x14NodeDiscoveryRequest\x12\x0c\n\x04host\x18\x01 \x01(\t\"a\n\x15NodeDiscoveryResponse\x12\x0c\n\x04host\x18\x01 \x01(\t\x12:\n\x0bnetElements\x18\x02 \x03(\x0b\x32%.com.toga.netbrain.service.NetElement\"\x19\n\nNetElement\x12\x0b\n\x03URI\x18\x01 \x01(\t2\xe1\x02\n\x0c\x41gentService\x12p\n\x0bgetHostInfo\x12/.com.toga.netbrain.service.AgentHostInfoRequest\x1a\x30.com.toga.netbrain.service.AgentHostInfoResponse\x12l\n\x0b\x63reateAgent\x12-.com.toga.netbrain.service.CreateAgentRequest\x1a..com.toga.netbrain.service.CreateAgentResponse\x12q\n\x0crunDiscovery\x12/.com.toga.netbrain.service.NodeDiscoveryRequest\x1a\x30.com.toga.netbrain.service.NodeDiscoveryResponseB\x02P\x01\x62\x06proto3'
 )
 
 
@@ -229,7 +229,7 @@ _NODEDISCOVERYRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='netElement', full_name='com.toga.netbrain.service.NodeDiscoveryResponse.netElement', index=1,
+      name='netElements', full_name='com.toga.netbrain.service.NodeDiscoveryResponse.netElements', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -248,7 +248,7 @@ _NODEDISCOVERYRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=317,
-  serialized_end=413,
+  serialized_end=414,
 )
 
 
@@ -261,15 +261,8 @@ _NETELEMENT = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='uri', full_name='com.toga.netbrain.service.NetElement.uri', index=0,
+      name='URI', full_name='com.toga.netbrain.service.NetElement.URI', index=0,
       number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='com.toga.netbrain.service.NetElement.value', index=1,
-      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -286,11 +279,11 @@ _NETELEMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=415,
-  serialized_end=455,
+  serialized_start=416,
+  serialized_end=441,
 )
 
-_NODEDISCOVERYRESPONSE.fields_by_name['netElement'].message_type = _NETELEMENT
+_NODEDISCOVERYRESPONSE.fields_by_name['netElements'].message_type = _NETELEMENT
 DESCRIPTOR.message_types_by_name['AgentHostInfoRequest'] = _AGENTHOSTINFOREQUEST
 DESCRIPTOR.message_types_by_name['AgentHostInfoResponse'] = _AGENTHOSTINFORESPONSE
 DESCRIPTOR.message_types_by_name['CreateAgentRequest'] = _CREATEAGENTREQUEST
@@ -359,8 +352,8 @@ _AGENTSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=458,
-  serialized_end=811,
+  serialized_start=444,
+  serialized_end=797,
   methods=[
   _descriptor.MethodDescriptor(
     name='getHostInfo',

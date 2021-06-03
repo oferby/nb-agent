@@ -25,13 +25,38 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
                                                numOfAgents=len(self.agents.keys()))
 
     def createAgent(self, request, context):
-        agent = ssh_agent.SSHAgent(request.host, request.username, request.password)
+        print("creating agent for: " + request.host)
+        host = request.host
+
+        if host in self.agents:
+            return agent_pb2.CreateAgentResponse(ack=False)
+
+        agent = ssh_agent.SSHAgent(host, request.username, request.password)
         self.agents[request.host] = agent
 
         return agent_pb2.CreateAgentResponse(ack=True)
 
     def runDiscovery(self, request, context):
-        pass
+        print("request discovery for host: " + request.host)
+        host = request.host
+        agent = self.agents[host]
+        hostname = agent.get_hostname()
+
+        netElements = []
+
+        NetElement = agent_pb2.NetElement(
+            URI='\\host\\' + host
+        )
+
+        netElements.append(NetElement)
+
+        NetElement = agent_pb2.NetElement(
+            URI='\\host\\' + host + '\\name\\' + hostname
+        )
+
+        netElements.append(NetElement)
+
+        return agent_pb2.NodeDiscoveryResponse(host=host, netElements=netElements)
 
 
 def serve():

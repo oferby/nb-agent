@@ -18,45 +18,63 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         self.hostId = None
         self.hostname = socket.gethostname()
 
+        self.command_dict = {
+            'shutDownHostAgent': self.shut_down
+        }
+
     def getHostInfo(self, request, context):
+        print("got request host info.")
         self.hostId = request.hostId
 
         return agent_pb2.AgentHostInfoResponse(hostId=self.hostId, hostName=self.hostname,
                                                numOfAgents=len(self.agents.keys()))
 
-    def createAgent(self, request, context):
-        print("creating agent for: " + request.host)
-        host = request.host
+    def sendCommand(self, request, context):
+        return self.command_dict[request.command]()
 
-        if host in self.agents:
+    def createAgent(self, request, context):
+        agent_name = request.agent
+        print("creating agent for: " + agent_name)
+
+        if agent_name in self.agents:
             return agent_pb2.CreateAgentResponse(ack=False)
 
-        agent = ssh_agent.SSHAgent(host, request.username, request.password)
-        self.agents[request.host] = agent
+        agent = ssh_agent.SSHAgent(agent_name, request.username, request.password)
+        self.agents[agent_name] = agent
 
         return agent_pb2.CreateAgentResponse(ack=True)
 
     def runDiscovery(self, request, context):
-        print("request discovery for host: " + request.host)
-        host = request.host
-        agent = self.agents[host]
+        agent_name = request.agent
+        print("request discovery for host: " + agent_name)
+        agent = self.agents[agent_name]
         hostname = agent.get_hostname()
 
-        netElements = []
+        net_elements = []
 
+        host_uri = '\\hostAgent\\' + self.hostId
+        self.get_net_element(host_uri, net_elements)
+
+        agent_uri = host_uri + '\\agent\\' + agent_name
+        self.get_net_element(agent_uri, net_elements)
+
+        uri = agent_uri + '\\name\\' + hostname
+        self.get_net_element(uri, net_elements)
+
+        return agent_pb2.NodeDiscoveryResponse(agent=agent_name, netElements=net_elements)
+
+    def shut_down(self):
+        print("clearing all agents.....")
+        self.agents.clear()
+        return agent_pb2.HostAgentResponse(errorCode=0)
+
+    def get_net_element(self, uri, net_elements):
         NetElement = agent_pb2.NetElement(
-            URI='\\host\\' + host
+            URI=uri
         )
 
-        netElements.append(NetElement)
-
-        NetElement = agent_pb2.NetElement(
-            URI='\\host\\' + host + '\\name\\' + hostname
-        )
-
-        netElements.append(NetElement)
-
-        return agent_pb2.NodeDiscoveryResponse(host=host, netElements=netElements)
+        net_elements.append(NetElement)
+        return net_elements
 
 
 def serve():

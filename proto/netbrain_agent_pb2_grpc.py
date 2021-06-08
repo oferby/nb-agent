@@ -19,6 +19,11 @@ class AgentServiceStub(object):
                 request_serializer=netbrain__agent__pb2.AgentHostInfoRequest.SerializeToString,
                 response_deserializer=netbrain__agent__pb2.AgentHostInfoResponse.FromString,
                 )
+        self.sendCommand = channel.unary_unary(
+                '/com.toga.netbrain.service.AgentService/sendCommand',
+                request_serializer=netbrain__agent__pb2.HostAgentRequest.SerializeToString,
+                response_deserializer=netbrain__agent__pb2.HostAgentResponse.FromString,
+                )
         self.createAgent = channel.unary_unary(
                 '/com.toga.netbrain.service.AgentService/createAgent',
                 request_serializer=netbrain__agent__pb2.CreateAgentRequest.SerializeToString,
@@ -29,12 +34,23 @@ class AgentServiceStub(object):
                 request_serializer=netbrain__agent__pb2.NodeDiscoveryRequest.SerializeToString,
                 response_deserializer=netbrain__agent__pb2.NodeDiscoveryResponse.FromString,
                 )
+        self.deleteAgent = channel.unary_unary(
+                '/com.toga.netbrain.service.AgentService/deleteAgent',
+                request_serializer=netbrain__agent__pb2.DeleteAgentRequest.SerializeToString,
+                response_deserializer=netbrain__agent__pb2.DeleteAgentResponse.FromString,
+                )
 
 
 class AgentServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def getHostInfo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def sendCommand(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -52,6 +68,12 @@ class AgentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def deleteAgent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AgentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -59,6 +81,11 @@ def add_AgentServiceServicer_to_server(servicer, server):
                     servicer.getHostInfo,
                     request_deserializer=netbrain__agent__pb2.AgentHostInfoRequest.FromString,
                     response_serializer=netbrain__agent__pb2.AgentHostInfoResponse.SerializeToString,
+            ),
+            'sendCommand': grpc.unary_unary_rpc_method_handler(
+                    servicer.sendCommand,
+                    request_deserializer=netbrain__agent__pb2.HostAgentRequest.FromString,
+                    response_serializer=netbrain__agent__pb2.HostAgentResponse.SerializeToString,
             ),
             'createAgent': grpc.unary_unary_rpc_method_handler(
                     servicer.createAgent,
@@ -69,6 +96,11 @@ def add_AgentServiceServicer_to_server(servicer, server):
                     servicer.runDiscovery,
                     request_deserializer=netbrain__agent__pb2.NodeDiscoveryRequest.FromString,
                     response_serializer=netbrain__agent__pb2.NodeDiscoveryResponse.SerializeToString,
+            ),
+            'deleteAgent': grpc.unary_unary_rpc_method_handler(
+                    servicer.deleteAgent,
+                    request_deserializer=netbrain__agent__pb2.DeleteAgentRequest.FromString,
+                    response_serializer=netbrain__agent__pb2.DeleteAgentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -94,6 +126,23 @@ class AgentService(object):
         return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/getHostInfo',
             netbrain__agent__pb2.AgentHostInfoRequest.SerializeToString,
             netbrain__agent__pb2.AgentHostInfoResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def sendCommand(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/sendCommand',
+            netbrain__agent__pb2.HostAgentRequest.SerializeToString,
+            netbrain__agent__pb2.HostAgentResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -128,5 +177,22 @@ class AgentService(object):
         return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/runDiscovery',
             netbrain__agent__pb2.NodeDiscoveryRequest.SerializeToString,
             netbrain__agent__pb2.NodeDiscoveryResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def deleteAgent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/deleteAgent',
+            netbrain__agent__pb2.DeleteAgentRequest.SerializeToString,
+            netbrain__agent__pb2.DeleteAgentResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

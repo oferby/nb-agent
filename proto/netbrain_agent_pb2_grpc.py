@@ -29,8 +29,8 @@ class AgentServiceStub(object):
                 request_serializer=netbrain__agent__pb2.CreateAgentRequest.SerializeToString,
                 response_deserializer=netbrain__agent__pb2.CreateAgentResponse.FromString,
                 )
-        self.runDiscovery = channel.unary_unary(
-                '/com.toga.netbrain.service.AgentService/runDiscovery',
+        self.getAgentInformation = channel.unary_unary(
+                '/com.toga.netbrain.service.AgentService/getAgentInformation',
                 request_serializer=netbrain__agent__pb2.NodeDiscoveryRequest.SerializeToString,
                 response_deserializer=netbrain__agent__pb2.NodeDiscoveryResponse.FromString,
                 )
@@ -62,7 +62,7 @@ class AgentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def runDiscovery(self, request, context):
+    def getAgentInformation(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -92,8 +92,8 @@ def add_AgentServiceServicer_to_server(servicer, server):
                     request_deserializer=netbrain__agent__pb2.CreateAgentRequest.FromString,
                     response_serializer=netbrain__agent__pb2.CreateAgentResponse.SerializeToString,
             ),
-            'runDiscovery': grpc.unary_unary_rpc_method_handler(
-                    servicer.runDiscovery,
+            'getAgentInformation': grpc.unary_unary_rpc_method_handler(
+                    servicer.getAgentInformation,
                     request_deserializer=netbrain__agent__pb2.NodeDiscoveryRequest.FromString,
                     response_serializer=netbrain__agent__pb2.NodeDiscoveryResponse.SerializeToString,
             ),
@@ -164,7 +164,7 @@ class AgentService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def runDiscovery(request,
+    def getAgentInformation(request,
             target,
             options=(),
             channel_credentials=None,
@@ -174,7 +174,7 @@ class AgentService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/runDiscovery',
+        return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/getAgentInformation',
             netbrain__agent__pb2.NodeDiscoveryRequest.SerializeToString,
             netbrain__agent__pb2.NodeDiscoveryResponse.FromString,
             options, channel_credentials,

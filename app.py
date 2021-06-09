@@ -11,16 +11,28 @@ from proto import netbrain_agent_pb2_grpc as agent_grpc
 from agent import ssh_agent
 
 
+def append_to_net_element(uri, net_elements):
+    NetElement = agent_pb2.NetElement(
+        URI=uri
+    )
+
+    net_elements.append(NetElement)
+    return net_elements
+
+
 class AgentServicer(agent_grpc.AgentServiceServicer):
 
     def __init__(self):
         self.agents = {}
         self.hostId = None
         self.hostname = socket.gethostname()
+        self.executor = futures.ThreadPoolExecutor(max_workers=10)
 
         self.command_dict = {
             'shutDownHostAgent': self.shut_down
         }
+
+        self.agents_info_dict = {}
 
     def getHostInfo(self, request, context):
         print("got request host info.")
@@ -44,7 +56,7 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
 
         return agent_pb2.CreateAgentResponse(ack=True)
 
-    def runDiscovery(self, request, context):
+    def getAgentInformation(self, request, context):
         agent_id = request.agentId
         print("request discovery for host: " + agent_id)
         agent = self.agents[agent_id]
@@ -52,16 +64,10 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
 
         net_elements = []
 
-        host_uri = '\\hostAgent\\' + self.hostId
-        self.get_net_element(host_uri, net_elements)
-
-        agent_uri = host_uri + '\\agent\\' + agent_id
-        self.get_net_element(agent_uri, net_elements)
-
-        uri = agent_uri + '\\name\\' + hostname
-        self.get_net_element(uri, net_elements)
-
         return agent_pb2.NodeDiscoveryResponse(agentId=agent_id, netElements=net_elements)
+
+
+
 
     def deleteAgent(self, request, context):
         agent_id = request.agentId
@@ -80,14 +86,6 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         print("clearing all agents.....")
         self.agents.clear()
         return agent_pb2.HostAgentCommandResponse(errorCode=0)
-
-    def get_net_element(self, uri, net_elements):
-        NetElement = agent_pb2.NetElement(
-            URI=uri
-        )
-
-        net_elements.append(NetElement)
-        return net_elements
 
 
 def serve():

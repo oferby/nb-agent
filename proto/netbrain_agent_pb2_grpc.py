@@ -21,8 +21,8 @@ class AgentServiceStub(object):
                 )
         self.sendCommand = channel.unary_unary(
                 '/com.toga.netbrain.service.AgentService/sendCommand',
-                request_serializer=netbrain__agent__pb2.HostAgentRequest.SerializeToString,
-                response_deserializer=netbrain__agent__pb2.HostAgentResponse.FromString,
+                request_serializer=netbrain__agent__pb2.HostAgentCommandRequest.SerializeToString,
+                response_deserializer=netbrain__agent__pb2.HostAgentCommandResponse.FromString,
                 )
         self.createAgent = channel.unary_unary(
                 '/com.toga.netbrain.service.AgentService/createAgent',
@@ -84,8 +84,8 @@ def add_AgentServiceServicer_to_server(servicer, server):
             ),
             'sendCommand': grpc.unary_unary_rpc_method_handler(
                     servicer.sendCommand,
-                    request_deserializer=netbrain__agent__pb2.HostAgentRequest.FromString,
-                    response_serializer=netbrain__agent__pb2.HostAgentResponse.SerializeToString,
+                    request_deserializer=netbrain__agent__pb2.HostAgentCommandRequest.FromString,
+                    response_serializer=netbrain__agent__pb2.HostAgentCommandResponse.SerializeToString,
             ),
             'createAgent': grpc.unary_unary_rpc_method_handler(
                     servicer.createAgent,
@@ -141,8 +141,8 @@ class AgentService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/com.toga.netbrain.service.AgentService/sendCommand',
-            netbrain__agent__pb2.HostAgentRequest.SerializeToString,
-            netbrain__agent__pb2.HostAgentResponse.FromString,
+            netbrain__agent__pb2.HostAgentCommandRequest.SerializeToString,
+            netbrain__agent__pb2.HostAgentCommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

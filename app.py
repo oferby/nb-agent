@@ -33,21 +33,21 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         return self.command_dict[request.command]()
 
     def createAgent(self, request, context):
-        agent_name = request.agent
-        print("creating agent for: " + agent_name)
+        agent_id = request.agentId
+        print("creating agent for: " + agent_id)
 
-        if agent_name in self.agents:
+        if agent_id in self.agents:
             return agent_pb2.CreateAgentResponse(ack=False)
 
-        agent = ssh_agent.SSHAgent(agent_name, request.username, request.password)
-        self.agents[agent_name] = agent
+        agent = ssh_agent.SSHAgent(agent_id, request.username, request.password)
+        self.agents[agent_id] = agent
 
         return agent_pb2.CreateAgentResponse(ack=True)
 
     def runDiscovery(self, request, context):
-        agent_name = request.agent
-        print("request discovery for host: " + agent_name)
-        agent = self.agents[agent_name]
+        agent_id = request.agentId
+        print("request discovery for host: " + agent_id)
+        agent = self.agents[agent_id]
         hostname = agent.get_hostname()
 
         net_elements = []
@@ -55,18 +55,31 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         host_uri = '\\hostAgent\\' + self.hostId
         self.get_net_element(host_uri, net_elements)
 
-        agent_uri = host_uri + '\\agent\\' + agent_name
+        agent_uri = host_uri + '\\agent\\' + agent_id
         self.get_net_element(agent_uri, net_elements)
 
         uri = agent_uri + '\\name\\' + hostname
         self.get_net_element(uri, net_elements)
 
-        return agent_pb2.NodeDiscoveryResponse(agent=agent_name, netElements=net_elements)
+        return agent_pb2.NodeDiscoveryResponse(agentId=agent_id, netElements=net_elements)
+
+    def deleteAgent(self, request, context):
+        agent_id = request.agentId
+        print("deleting agent " + agent_id)
+        if agent_id in self.agents:
+            agent = self.agents[agent_id]
+            agent.disconnect()
+            del self.agents[agent_id]
+            del agent
+            return agent_pb2.DeleteAgentResponse(ack=True)
+        else:
+            print("agent not found.")
+            return agent_pb2.DeleteAgentResponse(ack=False)
 
     def shut_down(self):
         print("clearing all agents.....")
         self.agents.clear()
-        return agent_pb2.HostAgentResponse(errorCode=0)
+        return agent_pb2.HostAgentCommandResponse(errorCode=0)
 
     def get_net_element(self, uri, net_elements):
         NetElement = agent_pb2.NetElement(

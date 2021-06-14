@@ -2,6 +2,7 @@ import sys
 import socket
 import grpc
 from concurrent import futures
+import json
 
 sys.path.insert(0, './proto')
 sys.path.insert(1, './agent')
@@ -45,34 +46,39 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         return self.command_dict[request.command]()
 
     def createAgent(self, request, context):
-        agent_id = request.target
-        print("creating agent for: " + agent_id)
+        target = request.target
+        print("creating agent for: " + target)
 
-        if agent_id in self.agents:
+        if target in self.agents:
             return agent_pb2.CreateAgentResponse(ack=True)
 
-        agent = ssh_agent.SSHAgent(agent_id, request.username, request.password)
-        self.agents[agent_id] = agent
-
+        agent = ssh_agent.SSHAgent(target, request.username, request.password)
+        self.agents[target] = agent
+        self.executor.submit(self.run_agent_discovery, agent)
         return agent_pb2.CreateAgentResponse(ack=True)
 
+    @staticmethod
+    def run_agent_discovery(agent):
+        print("running agent discovery task")
+        agent.run_discovery()
+
     def getAgentInformation(self, request, context):
-        agent_id = request.target
-        print("request discovery for host: " + agent_id)
-        agent = self.agents[agent_id]
-        hostname = agent.get_hostname()
-
+        target = request.target
+        print("request agent info for target: " + target)
+        agent = self.agents[target]
         net_elements = []
+        json_str = json.dumps(agent.get_agent_info())
+        append_to_net_element(json_str, net_elements)
 
-        return agent_pb2.NodeDiscoveryResponse(target=agent_id, netElements=net_elements)
+        return agent_pb2.NodeDiscoveryResponse(target=target, netElements=net_elements)
 
     def deleteAgent(self, request, context):
-        agent_id = request.target
-        print("deleting agent " + agent_id)
-        if agent_id in self.agents:
-            agent = self.agents[agent_id]
+        target = request.target
+        print("deleting agent " + target)
+        if target in self.agents:
+            agent = self.agents[target]
             agent.disconnect()
-            del self.agents[agent_id]
+            del self.agents[target]
             del agent
             return agent_pb2.DeleteAgentResponse(ack=True)
         else:

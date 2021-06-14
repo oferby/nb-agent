@@ -45,11 +45,11 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         return self.command_dict[request.command]()
 
     def createAgent(self, request, context):
-        agent_id = request.agentId
+        agent_id = request.target
         print("creating agent for: " + agent_id)
 
         if agent_id in self.agents:
-            return agent_pb2.CreateAgentResponse(ack=False)
+            return agent_pb2.CreateAgentResponse(ack=True)
 
         agent = ssh_agent.SSHAgent(agent_id, request.username, request.password)
         self.agents[agent_id] = agent
@@ -57,20 +57,17 @@ class AgentServicer(agent_grpc.AgentServiceServicer):
         return agent_pb2.CreateAgentResponse(ack=True)
 
     def getAgentInformation(self, request, context):
-        agent_id = request.agentId
+        agent_id = request.target
         print("request discovery for host: " + agent_id)
         agent = self.agents[agent_id]
         hostname = agent.get_hostname()
 
         net_elements = []
 
-        return agent_pb2.NodeDiscoveryResponse(agentId=agent_id, netElements=net_elements)
-
-
-
+        return agent_pb2.NodeDiscoveryResponse(target=agent_id, netElements=net_elements)
 
     def deleteAgent(self, request, context):
-        agent_id = request.agentId
+        agent_id = request.target
         print("deleting agent " + agent_id)
         if agent_id in self.agents:
             agent = self.agents[agent_id]
